@@ -9,15 +9,27 @@
 #include <QFile>
 #include <QDebug>
 #include <QLabel>
-#include <vector>
+#include <QVector>
+#include <QPair>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QString>
 
 #include "mainwindow.h"
+#include "projectclass.h"
+#include "existingprojectbutton.h"
+#include "projectclass.h"
+#include "newprojectwindow.h"
 
 class StartWindow : public QWidget
 {
     Q_OBJECT
 public:
     explicit StartWindow(QWidget *parent = nullptr);
+    void makeProjectList();
+    QString changeSlash(QString path);
+
 
 private:
     QPushButton* newProjectButton;
@@ -35,13 +47,17 @@ private:
 
     QHBoxLayout* mainLayout;
 
-    std::vector<QPushButton*> existingProjectsButtonsArray;
+    QVector<QPair<QString, ExistingProjectButton*>> existingProjectsFiles;
+    ProjectClass* mainProject;
+
+    NewProjectWindow* newProjectWindow;
 
 signals:
 
 private slots:
-    void doNothing();
+    void projectLoadedFromList(int);
     void createNewProject();
+    void openNewProject(QString);
 
 };
 

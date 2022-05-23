@@ -1,7 +1,9 @@
 #include "tablewidgetcell.h"
 
-TableWidgetCell::TableWidgetCell(QWidget *parent) : QWidget(parent)
-{    
+TableWidgetCell::TableWidgetCell(int setX, int setY)
+{
+    x = setX;
+    y = setY;
     salaryNewValue = new QLineEdit;
     //salaryNewValue->setEnabled(0);
     salaryNewValue->hide();
@@ -32,6 +34,22 @@ TableWidgetCell::TableWidgetCell(QWidget *parent) : QWidget(parent)
     this->setLayout(mainLayout);
 }
 
+int TableWidgetCell::getX() const {
+    return x;
+}
+int TableWidgetCell::getY() const {
+    return y;
+}
+
+void TableWidgetCell::setPresence() {
+    presenceChange->setChecked(1);
+}
+void TableWidgetCell::setChangedSalary(double salary) {
+    presenceChange->setChecked(1);
+    emit(salaryChangeButton->clicked());
+    salaryNewValue->setText(QString::number(salary));
+}
+
 void TableWidgetCell::presenceChanged(bool isChecked) {
     if(isChecked == 1) {
         salaryChangeButton->show();
@@ -40,12 +58,17 @@ void TableWidgetCell::presenceChanged(bool isChecked) {
         salaryChangeButton->hide();
     }
 
-    emit(makeStretch());
+    emit makeStretch();
+    emit setSalary(x, y, -1);
 }
 
 void TableWidgetCell::salaryChangeButtonClicked() {
     salaryNewValue->show();
     salaryInformation->show();
 
-    emit(makeStretch());
+    emit makeStretch();
+}
+
+void TableWidgetCell::salaryChanged(int setSalaryInt) {
+    emit setSalary(x, y, setSalaryInt);
 }
