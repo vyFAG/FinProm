@@ -2,6 +2,12 @@
 
 WorkTimeSet::WorkTimeSet(ProjectClass* project)
 {
+    QFile* styleSheetFile = new QFile("style_sheet.css");
+    styleSheetFile->open(QIODevice::ReadOnly);
+    QString style = styleSheetFile->readAll();
+
+    this->setStyleSheet(style);
+
     tmpProject = project;
     startTime = new QDateEdit();
     startTime->setDate(tmpProject->getStartDate());

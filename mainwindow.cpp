@@ -11,8 +11,11 @@ MainWindow::MainWindow(ProjectClass* startProject) {
     connect(saveProject, SIGNAL(clicked()), this, SLOT(projectSaved()));
 
     mainProject = startProject;
+    mainProject->outProject();
+    mainProject->setProjectPath(QCoreApplication::applicationDirPath() + "//projects" + "//" + mainProject->getProjectName() + ".fpproject");
     mainTable = new WorkersTable(mainProject);
     mainTable->prepareColumns();
+    mainTable->initializeCells(mainProject);
     connect(mainProject, SIGNAL(workerAdded(WorkerClass&)), mainTable, SLOT(workerAddedSlot(WorkerClass&)));
     connect(mainProject, SIGNAL(dateChanged(int)), mainTable, SLOT(sheduleChangedSlot(int)));
     connect(mainTable, SIGNAL(setSalaryToProject(int,int,double)), mainProject, SLOT(changeSalary(int,int,double)));
@@ -84,85 +87,40 @@ void MainWindow::projectSaved() {
         return;
     }
 
-    QDataStream write(savedProject);
+    QTextStream write(savedProject);
 
-    write.setVersion(QDataStream::Qt_5_13);
+    //write.setVersion(QDataStream::Qt_5_13);
 
     write << mainProject->getProjectName() << "\n";
-    write << mainProject->getProjectPath() << "\n";
+    if(mainProject->getProjectPath() == "") {
+        write << "zero";
+    }
+    else {
+        write << mainProject->getProjectPath() << "\n";
+    }
     write << mainProject->getWorkersVector().size() << "\n";
     for(int i = 0; i < mainProject->getWorkersVector().size(); i++) {
         write << mainProject->getWorkersVector().at(i).getWorkerName() << "\n";
         write << mainProject->getWorkersVector().at(i).getWorkerSalary() << "\n";
         write << mainProject->getWorkersVector().at(i).getWorkerSpecialization() << "\n";
     }
+    //qDebug() << mainProject->getWorkersShedule().size();
     write << mainProject->getWorkersShedule().size()  << "\n";
     for(int i = 0; i < mainProject->getWorkersShedule().size(); i++) {
+        //qDebug() << mainProject->getWorkersShedule().at(i).size();
         write << mainProject->getWorkersShedule().at(i).size() << "\n";
         for(int x = 0; x < mainProject->getWorkersShedule().at(i).size(); x++) {
-            write << mainProject->getWorkersShedule().at(i).at(x) << "\n";
+            if(mainProject->getWorkersShedule().at(i).at(x) == 0) {
+                write << -1 << "\n";
+            }
+            else {
+                write << mainProject->getWorkersShedule().at(i).at(x) << "\n";
+            }
         }
     }
 
-    write << mainProject->getStartDate() << "\n";
-    write << mainProject->getFinishDate() << "\n";
-
-    savedProject->close();
-    savedProject->open(QIODevice::ReadOnly);
-
-    ProjectClass* projectTmp = new ProjectClass();
-
-    QDataStream read(savedProject);
-
-    read.setVersion(QDataStream::Qt_5_13);
-
-    QString tmpString;
-    read >> tmpString;
-    projectTmp->setProjectName(tmpString);
-
-    read >> tmpString;
-    projectTmp->setProjectPath(tmpString);
-
-    int workersSize;
-    read >> workersSize;
-    for(int i = 0; i < workersSize; i++) {
-        QString workerName;
-        double workerSalary;
-        QString workerSpecialization;
-
-        read >> workerName;
-        read >> workerSalary;
-        read >> workerSpecialization;
-
-        projectTmp->addWorker(workerName, workerSalary, workerSpecialization);
-    }
-
-    int workerSheduleSize;
-    read >> workerSheduleSize;
-    qDebug() << workerSheduleSize;
-    for(int i = 0; i < workerSheduleSize; i++) {
-        int workerSalarySize;
-        QVector<double> workerSalary;
-        read >> workerSalarySize;
-        qDebug() << workerSalarySize;
-        for(int x = 0; x < workerSalarySize; x++) {
-            double workerSalaryDay;
-            read >> workerSalaryDay;
-
-            workerSalary.push_back(workerSalaryDay);
-        }
-        projectTmp->addUploaded(workerSalary);
-    }
-
-    QDate startDate;
-    QDate finishDate;
-
-    read >> startDate;
-    read >> finishDate;
-    projectTmp->setStartDate(startDate);
-    projectTmp->setFinishDate(finishDate);
-
-    projectTmp->outProject();
+    write << mainProject->getStartDate().toString() << "\n";
+    write << mainProject->getFinishDate().toString() << "\n";
 
     savedProject->close();
 }

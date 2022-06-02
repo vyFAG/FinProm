@@ -15,6 +15,8 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QString>
+#include <QPalette>
+#include <QPixmap>
 
 #include "mainwindow.h"
 #include "projectclass.h"

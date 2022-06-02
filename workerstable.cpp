@@ -27,13 +27,13 @@ void WorkersTable::setWidgetAll() {
     setHeaders();
 }
 
-void WorkersTable::initializeCells(ProjectClass setProject) {
-    for(int y = 0; y < setProject.getWorkersShedule().size(); y++) {
+void WorkersTable::initializeCells(ProjectClass* setProject) {
+    for(int y = 0; y < setProject->getWorkersShedule().size(); y++) {
         if(this->rowCount() <= y) {
             this->setRowCount(this->rowCount() + 1);
         }
-        this->setItem(y, 0, new QTableWidgetItem(setProject.getWorkersVector().at(y).getWorkerName()));
-        for(int x = 1; x < setProject.getWorkersShedule().at(y).size(); x++) {
+        this->setItem(y, 0, new QTableWidgetItem(setProject->getWorkersVector().at(y).getWorkerName()));
+        for(int x = 1; x < setProject->getWorkersShedule().at(y).size(); x++) {
             setCellWidget(y, x, new TableWidgetCell(x, y));
             if(mainProject->getWorkerSalary(x - 1, y) == mainProject->getWorkersVector().at(y).getWorkerSalary()) {
                 TableWidgetCell* widgetTmp = qobject_cast<TableWidgetCell*>(this->cellWidget(y, x));

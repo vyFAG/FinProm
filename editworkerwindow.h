@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QFile>
 
 #include "workerclass.h"
 

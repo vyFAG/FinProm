@@ -3,15 +3,21 @@
 StartWindow::StartWindow(QWidget *parent) : QWidget(parent) {
     //this->setStyleSheet("background-color: #ffffff");
 
+    this->setObjectName("start_window");
+
     QFile* styleSheetFile = new QFile("style_sheet.css");
     styleSheetFile->open(QIODevice::ReadOnly);
     QString style = styleSheetFile->readAll();
 
-    //qDebug() << style;
-
     this->setStyleSheet(style);
 
     this->setFixedSize(640, 480);
+
+    QPixmap bkgnd("start_window_background_image.png");
+    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPalette palette;
+    palette.setBrush(QPalette::Window, bkgnd);
+    this->setPalette(palette);
 
     mainProject = new ProjectClass();
 
@@ -54,7 +60,8 @@ StartWindow::StartWindow(QWidget *parent) : QWidget(parent) {
     existingProjectsScrollArea->show();
 
     listOfProjects = new QLabel("Недавние проекты", this);
-    listOfProjects->setAlignment(Qt::AlignLeft);
+    listOfProjects->setAlignment(Qt::AlignCenter);
+    listOfProjects->setObjectName("header_label");
 
     projectsLayout = new QVBoxLayout();
 
@@ -89,7 +96,8 @@ void StartWindow::makeProjectList() {
         if (fileInfo.completeSuffix() == "fpproject") {
             existingProjectsFiles.push_back(QPair<QString, ExistingProjectButton*>(fileInfo.absoluteFilePath(),
                                                                                    new ExistingProjectButton(fileInfo.baseName(), existingProjectsFiles.size())));
-            existingProjectsFiles[existingProjectsFiles.size() - 1].second->setMinimumHeight(20);
+            existingProjectsFiles[existingProjectsFiles.size() - 1].second->setMinimumHeight(40);
+            existingProjectsFiles[existingProjectsFiles.size() - 1].second->setMinimumWidth(existingProjectsScrollArea->width() - 20);
             existingProjectsFiles[existingProjectsFiles.size() - 1].second->setObjectName("existingProjectButton");
             existingProjectsLayout->addWidget(existingProjectsFiles[existingProjectsFiles.size() - 1].second);
             connect(existingProjectsFiles[existingProjectsFiles.size() - 1].second, SIGNAL(clicked()),
@@ -124,50 +132,63 @@ void StartWindow::projectLoadedFromList(int index) {
         return;
     }
 
-    QDataStream read(savedProject);
+    ProjectClass* projectTmp = new ProjectClass();
 
-    read.setVersion(QDataStream::Qt_5_13);
+    QTextStream read(savedProject);
+
+    //read.setVersion(QDataStream::Qt_5_13);
 
     QString tmpString;
     read >> tmpString;
-    mainProject->setProjectName(tmpString);
+    projectTmp->setProjectName(tmpString);
 
     read >> tmpString;
-    mainProject->setProjectPath(tmpString);
+    projectTmp->setProjectPath(tmpString);
 
-    int workersSize;
+    QString workersSize;
     read >> workersSize;
-    for(int i = 0; i < workersSize; i++) {
+    for(int i = 0; i < workersSize.toInt(); i++) {
         QString workerName;
-        double workerSalary;
+        QString workerSalary;
         QString workerSpecialization;
 
         read >> workerName;
         read >> workerSalary;
         read >> workerSpecialization;
 
-        mainProject->addWorker(workerName, workerSalary, workerSpecialization);
+        projectTmp->addWorker(workerName, workerSalary.toDouble(), workerSpecialization);
     }
-
-    int workerSheduleSize;
+    QString workerSheduleSize;
     read >> workerSheduleSize;
-    for(int i = 0; i < workerSheduleSize; i++) {
-        QVector<double> tmpRow;
-        int tmpRowSize;
-        read >> tmpRowSize;
-        read >> tmpRow;
-        mainProject->addUploaded(tmpRow);
+    for(int i = 0; i < workerSheduleSize.toInt(); i++) {
+        QString workerSalarySize;
+        QVector<double> workerSalary;
+        read >> workerSalarySize;
+        for(int x = 0; x < workerSalarySize.toInt(); x++) {
+            QString workerSalaryDay;
+            read >> workerSalaryDay;
+
+            if(workerSalaryDay.toDouble() == -1) {
+                workerSalaryDay = 0;
+            }
+
+            workerSalary.push_back(workerSalaryDay.toDouble());
+        }
+        projectTmp->addUploaded(workerSalary);
     }
 
     QDate startDate;
     QDate finishDate;
 
-    read >> startDate;
-    read >> finishDate;
-    mainProject->setStartDate(startDate);
-    mainProject->setFinishDate(finishDate);
+    //read >> startDate;
+    //read >> finishDate;
+    projectTmp->setStartDate(startDate);
+    projectTmp->setFinishDate(finishDate);
 
-    MainWindow* mainWindow = new MainWindow(mainProject);
+    projectTmp->outProject();
+
+    savedProject->close();
+    MainWindow* mainWindow = new MainWindow(projectTmp);
     mainWindow->show();
     this->hide();
 }

@@ -18,7 +18,7 @@ public:
     void addRow();
     void addColumn();
     void setWidgetAll();
-    void initializeCells(ProjectClass setProject);
+    void initializeCells(ProjectClass* setProject);
     void setHeaders();
     void prepareColumns();
 

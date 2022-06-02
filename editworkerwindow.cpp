@@ -1,6 +1,12 @@
 #include "editworkerwindow.h"
 
 EditWorkerWindow::EditWorkerWindow(WorkerClass& worker) : workerTmp(&worker){
+    QFile* styleSheetFile = new QFile("style_sheet.css");
+    styleSheetFile->open(QIODevice::ReadOnly);
+    QString style = styleSheetFile->readAll();
+
+    this->setStyleSheet(style);
+
     okButton = new QPushButton("OK", this);
     connect(okButton, SIGNAL(clicked()), this, SLOT(acceptEditing()));
     cancelButton = new QPushButton("Cancel", this);

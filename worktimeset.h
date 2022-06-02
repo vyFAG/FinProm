@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QGridLayout>
 #include <QDateTime>
+#include <QFile>
 
 #include "projectclass.h"
 

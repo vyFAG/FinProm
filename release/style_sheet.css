@@ -1,0 +1,110 @@
+QPushButton#salary-change {
+    background-color: #ffffff;
+    border: 0px solid #ffffff;
+}
+
+QPushButton {
+    background-color: #f4f4f4;
+    color: #000000;
+    border: 3px solid #a5a5a5;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: "Andale Mono";
+}
+
+QPushButton:hover{
+    background-color: #9b9b9b;
+    color: #ffffff;
+    border-color: #525252;
+}
+
+QLabel#header_label {
+    background-color: rgba(255, 255, 255, 0);
+    color: #000000;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: "Andale Mono";
+}
+
+QWidget{
+    background-color: #ffffff;
+}
+
+QWidget#start_window {
+    background: url(start_window_background_image.png) no-repeat right bottom;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+QScrollWidget {
+    background-color: inherit;
+}
+
+QScrollBar:horizontal
+{
+    height: 15px;
+    margin: 3px 15px 3px 15px;
+    border: 1px transparent #818181;
+    border-radius: 4px;
+    background-color: rgb(143, 143, 143);    /* #2A2929; */
+}
+
+QScrollBar::handle:horizontal
+{
+    background-color: rgb(95, 95, 95);      /* #605F5F; */
+    min-width: 5px;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:horizontal
+{
+    margin: 0px 3px 0px 3px;
+    border-image: url(:/qss_icons/rc/right_arrow_disabled.png);
+    width: 10px;
+    height: 10px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:horizontal
+{
+    margin: 0px 3px 0px 3px;
+    border-image: url(:/qss_icons/rc/left_arrow_disabled.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::add-line:horizontal:hover,QScrollBar::add-line:horizontal:on
+{
+    border-image: url(:/qss_icons/rc/right_arrow.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: right;
+    subcontrol-origin: margin;
+}
+
+
+QScrollBar::sub-line:horizontal:hover, QScrollBar::sub-line:horizontal:on
+{
+    border-image: url(:/qss_icons/rc/left_arrow.png);
+    height: 10px;
+    width: 10px;
+    subcontrol-position: left;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal
+{
+    background: none;
+}
+
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
+{
+    background: none;
+}

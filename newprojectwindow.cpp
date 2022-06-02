@@ -1,6 +1,12 @@
 #include "newprojectwindow.h"
 
 NewProjectWindow::NewProjectWindow() {
+    QFile* styleSheetFile = new QFile("style_sheet.css");
+    styleSheetFile->open(QIODevice::ReadOnly);
+    QString style = styleSheetFile->readAll();
+
+    this->setStyleSheet(style);
+
     setNameOfProject = new QLineEdit();
     setNameOfProjectInformation = new QLabel("Введите имя");
     createProject = new QPushButton("Подтвердить");
